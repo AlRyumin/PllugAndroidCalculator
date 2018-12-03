@@ -8,13 +8,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.Serializable;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button button0, button1, button2, button3, button4, button5, button6, button7, button8, button9,
             buttonClear, buttonMultiple, buttonDevide, buttonAdd, buttonSubtract;
     private TextView inputField, resultField;
     private boolean isFirst = true;
-    private String firstNumber = "", secondNumber = "", inputText = "";
+    private String firstNumber = "", secondNumber = "", inputText = "", resultText = "";
 
     private char operation = '\0';
 
@@ -24,6 +26,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         initView();
+
+        if (savedInstanceState != null){
+                setBundledFields(savedInstanceState);
+        }
     }
 
     @Override
@@ -46,6 +52,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         setValue(view);
+    }
+
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+        state.putSerializable("isFirst", isFirst);
+        state.putSerializable("firstNumber", firstNumber);
+        state.putSerializable("secondNumber", secondNumber);
+        state.putSerializable("inputText", inputText);
+        state.putSerializable("resultText", resultText);
+        state.putSerializable("operation", operation);
+    }
+
+    protected void setBundledFields(Bundle savedInstanceState){
+        if (savedInstanceState.getSerializable("isFirst") != null) {
+            isFirst = (boolean) savedInstanceState.getSerializable("isFirst");
+        }
+
+        if (savedInstanceState.getSerializable("firstNumber") != null) {
+            firstNumber = (String) savedInstanceState.getSerializable("firstNumber");
+        }
+
+        if (savedInstanceState.getSerializable("secondNumber") != null) {
+            secondNumber = (String) savedInstanceState.getSerializable("secondNumber");
+        }
+
+        if (savedInstanceState.getSerializable("operation") != null) {
+            operation = (char) savedInstanceState.getSerializable("operation");
+        }
+
+        if (savedInstanceState.getSerializable("inputText") != null) {
+            inputText = (String) savedInstanceState.getSerializable("inputText");
+            inputField.setText(inputText);
+        }
+
+        if (savedInstanceState.getSerializable("resultText") != null) {
+            resultText = (String) savedInstanceState.getSerializable("resultText");
+            resultField.setText(resultText);
+        }
     }
 
     protected boolean isNumericId(View view) {
@@ -73,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     
     protected void setOperation(View view){
 
-        if(firstNumber.isEmpty()){
+        if(firstNumber.isEmpty() || !secondNumber.isEmpty()){
             return;
         } else if(!isFirst) {
             inputText = removeLastChar(inputText);
@@ -103,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         resultField.setText("");
         isFirst = true;
 
-        firstNumber = secondNumber = inputText = "";
+        firstNumber = secondNumber = inputText = resultText = "";
     }
 
     protected void countResult(){
@@ -130,14 +174,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
             }
 
-            String resultString = Integer.toString(result);
+            resultText = Integer.toString(result);
 
-            firstNumber = resultString;
+            firstNumber = resultText;
             secondNumber = "";
             isFirst = true;
             operation = '\0';
 
-            resultField.setText(resultString);
+            resultField.setText(resultText);
 
         } catch (Exception e){
             Log.d("countResult Exception", e.getLocalizedMessage());
