@@ -152,10 +152,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     protected void countResult(){
         try {
-            int a = Integer.parseInt(firstNumber);
-            int b = Integer.parseInt(secondNumber);
+            double a = Double.parseDouble(firstNumber);
+            double b = Double.parseDouble(secondNumber);
 
-            int result = 0;
+            double result = 0;
 
             switch (operation) {
                 case '*':
@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
             }
 
-            resultText = Integer.toString(result);
+            resultText = Double.toString(result);
 
             firstNumber = resultText;
             secondNumber = "";
